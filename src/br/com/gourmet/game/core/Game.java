@@ -21,7 +21,7 @@ public class Game extends javax.swing.JFrame {
 	public void startGame() {
 		loadInitialsDishes();
 		mensagemService = new MessageService();
-		jogoInicial();
+		showInitialScreen();
 	}
 
 	private void loadInitialsDishes() {
@@ -33,7 +33,7 @@ public class Game extends javax.swing.JFrame {
 
 	private void executeLogicGame() {
 		ArrayList<Plate> newPlates;
-		resultConfirm = mensagemService.openConfirmForm("massa");
+		resultConfirm = mensagemService.openConfirmForm(GourmetGameConstants.PASTA);
 		if (resultConfirm == JOptionPane.YES_OPTION) {
 			newPlates = executaLogicaDosPratos(this.pastaDishes);
 			this.pastaDishes = newPlates;
@@ -41,40 +41,41 @@ public class Game extends javax.swing.JFrame {
 			newPlates = executaLogicaDosPratos(this.cakeDishes);
 			this.cakeDishes = newPlates;
 		}
+		showInitialScreen();
 	}
 
-	private ArrayList<Plate> executaLogicaDosPratos(ArrayList<Plate> pratos) {
+	private ArrayList<Plate> executaLogicaDosPratos(ArrayList<Plate> plates) {
 		@SuppressWarnings("unchecked")
-		ArrayList<Plate> clone = (ArrayList<Plate>) pratos.clone();
+		ArrayList<Plate> clone = (ArrayList<Plate>) plates.clone();
 
-		for (int count = 0; count < pratos.size(); count++) {
-			Plate plate = pratos.get(count);
+		for (int count = 0; count < plates.size(); count++) {
+			Plate plate = plates.get(count);
 
 			resultConfirm = mensagemService.openConfirmForm(plate.getName());
 			if (resultConfirm == JOptionPane.YES_OPTION) {
-				mensagemService.mostraModalDeAcerto();
+				mensagemService.showSuccessMessage();
+				showInitialScreen();
 				break;
 			}
 
-			if (count == pratos.size() - 1 && resultConfirm == JOptionPane.NO_OPTION) {
-				String dishName = mensagemService.mostraInputDialog(GourmetGameConstants.INTENDED_PLATE_QUESTION_2, GourmetGameConstants.GIVE_UP);
+			if (count == plates.size() -1 && resultConfirm == JOptionPane.NO_OPTION) {
+				String dishName = mensagemService.showInputDialog(GourmetGameConstants.INTENDED_PLATE_QUESTION_2, GourmetGameConstants.GIVE_UP);
 				String message = String.format(GourmetGameConstants.CHARACTERISTICS_OF_THE_DISH, dishName,
 						plate.getName());
-				String attribute = mensagemService.mostraInputDialog(message, GourmetGameConstants.COMPLETE);
+				String attribute = mensagemService.showInputDialog(message, GourmetGameConstants.COMPLETE);
 				Plate newPlate = new Plate(dishName, attribute);
 				clone.add(newPlate);
-				jogoInicial();
 			}
 		}
 
-		pratos = clone;
-		return pratos;
+		plates = clone;
+		return plates;
 	}
 
-	private void jogoInicial() {
-		int deveIniciarJogo = mensagemService.mostraTelaInicial();
+	private void showInitialScreen() {
+		int shouldStartGame = mensagemService.showInitialScreen();
 
-		if (deveIniciarJogo == JOptionPane.OK_OPTION) {
+		if (shouldStartGame == JOptionPane.OK_OPTION) {
 			executeLogicGame();
 		}
 	}
