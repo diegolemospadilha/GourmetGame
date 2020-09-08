@@ -29,6 +29,7 @@ public class Game extends javax.swing.JFrame {
 		nodeRoot = new Node(GourmetGameConstants.PASTA);
 		nodeRoot.setLeft(new Node(GourmetGameConstants.LASAGNA));
 		nodeRoot.setRight(new Node("Bolo de chocolate"));
+		nodeRoot.print(nodeRoot);
 	}
 	
 	/**
@@ -66,10 +67,10 @@ public class Game extends javax.swing.JFrame {
 			mensagemService.showSuccessMessage();
 			showInitialScreen();
 		} else {
-			if (node.hasLeft()) {
-				executeLogicOfDishes(node.getLeft());
-			} else if (node.hasRight()) {
+			if (resultConfirm == JOptionPane.YES_OPTION && node.hasRight()) {
 				executeLogicOfDishes(node.getRight());
+			} else if (resultConfirm == JOptionPane.NO_OPTION && node.hasLeft()) {
+				executeLogicOfDishes(node.getLeft());
 			} else {
 				String dishName = mensagemService.showInputDialog(GourmetGameConstants.INTENDED_PLATE_QUESTION_2,
 						GourmetGameConstants.GIVE_UP);
